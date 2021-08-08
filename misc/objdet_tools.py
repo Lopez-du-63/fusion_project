@@ -12,12 +12,12 @@
 
 ##################
 ## IMPORTS
-
 ## general package imports
 import cv2
 import numpy as np
 import math
 from shapely.geometry import Polygon
+
 
 # add project directory to python path to enable relative imports
 import os
@@ -232,7 +232,7 @@ def project_detections_into_bev(bev_map, detections, configs, color=[]):
         cv2.polylines(bev_map, [corners_int], True, color, 2)
 
         # draw colored line to identify object front
-        corners_int = bev_corners.reshape(-1, 2)
+        corners_int = bev_corners.reshape(-1, 2).astype(int)
         cv2.line(bev_map, (corners_int[0, 0], corners_int[0, 1]), (corners_int[3, 0], corners_int[3, 1]), (255, 255, 0), 2)
 
 
