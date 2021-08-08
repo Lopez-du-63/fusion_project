@@ -28,7 +28,7 @@ After going through a serie of pointcloud, I would say following features appear
 In the exercise 2 i create the BEV view. I followed instructions provided in the lesson rather than in the code, as there is a mistake in the comments. The provided code suggests to take the intensity of the highest point in a cell, instead of taking the point with most intensity in the cell.
 I used the percentile function in order to normalize intensity.
 Below an example of obtained BEV:  
-![BEV](/img/bev_image.JPG)
+![BEV](/img/bev_example.JPG)
 
 
 ### Step 3
@@ -37,7 +37,7 @@ I met following difficulties:
  * The structure of "detections" variable provided by the fpn_resnet took me some time to understand before being able to re-use it. In the end, as we only detect vehicles in this exercise, we do not need to extract the class id.
 
 Here is an example of result:  
-![FPN Detection](/img/fpn_resnet_detection.JPG)
+![FPN Detection](/img/fpn_resnet_detection.JPG)  
 We can see that 2 vehicles out of 3 are correctly detected.
 
 ### Step 4
@@ -54,8 +54,8 @@ In order to check my results, I ran the full project only using the result files
 
 When executing my own code on the whole chain I find nearly the same numbers versus the analysis of numbers provided from the results files.
 Here are my results using the parameters provided for the exercise:  
-  * precision = 0.9611307420494699precision
-  * recall = 0.8888888888888888
+  * precision = 0.9611307420494699
+  * recall = 0.8888888888888888  
 ![Overall Results](img/overall_results.png)  
 
 The error alonz z axis is extremely high. But this is because the Step 4 is executed using Darknet. And according to the provided code, when using darknet model, Z takes the arbitrary value of 0. So this makes no sense to check this value.  
