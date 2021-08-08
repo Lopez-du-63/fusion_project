@@ -60,7 +60,7 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
                 ## step 4 : computer the center distance between label and detection bounding-box in x, y, and z
                 dist_x = label.box.center_x - detection[1]
                 dist_y = label.box.center_y - detection[2]
-                dist_z = label.box.center_z - detection[3]
+                dist_z = label.box.center_z - (detection[3])
                 
                 ## step 5 : compute the intersection over union (IOU) between label and detection bounding-box
                 #using shapely to compute intersections

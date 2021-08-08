@@ -248,8 +248,8 @@ def convert_coordinates(detection, configs):
     ## step 3 : perform the conversion using the limits for x, y and z set in the configs structure
     y = _x*(configs.lim_y[1]-configs.lim_y[0])/(configs.bev_width) + configs.lim_y[0]
     x = _y*(configs.lim_x[1]-configs.lim_x[0])/(configs.bev_height) + configs.lim_x[0]
-    z = _z * float(configs.lim_z[1] - configs.lim_z[0]) +  configs.lim_z[0]
+    #z = _z * float(configs.lim_z[1] - configs.lim_z[0]) +  configs.lim_z[0]
     w = _w*(configs.lim_y[1] - configs.lim_y[0])/configs.bev_width
     l = _l * (configs.lim_x[1] - configs.lim_x[0]) / configs.bev_height
     yaw = -_yaw
-    return [1, x, y, z, _h, w, l, yaw]
+    return [1, x, y, _z, _h, w, l, yaw]
