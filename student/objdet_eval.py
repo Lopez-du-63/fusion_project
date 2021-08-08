@@ -13,12 +13,13 @@
 # general package imports
 import numpy as np
 import matplotlib
-matplotlib.use('wxagg') # change backend so that figure maximizing works on Mac as well     
+#matplotlib.use('wxagg') # change backend so that figure maximizing works on Mac as well     
 import matplotlib.pyplot as plt
 
 import torch
 from shapely.geometry import Polygon
 from operator import itemgetter
+
 
 # add project directory to python path to enable relative imports
 import os
@@ -36,6 +37,7 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
     
      # find best detection for each valid label 
     true_positives = 0 # no. of correctly detected objects
+    false_negatives = 0
     center_devs = []
     ious = []
     for label, valid in zip(labels, labels_valid):
@@ -47,19 +49,33 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
             ####### ID_S4_EX1 START #######     
             #######
             print("student task ID_S4_EX1 ")
-
             ## step 1 : extract the four corners of the current label bounding-box
+            [fl_label, rl_label, rr_label, fr_label] = tools.compute_box_corners(label.box.center_x, label.box.center_y, label.box.width, 
+                                                                                 label.box.length, label.box.heading)
             
             ## step 2 : loop over all detected objects
-
+            for detection in detections:
                 ## step 3 : extract the four corners of the current detection
-                
+                [fl_det, rl_det, rr_det, fr_det] = tools.compute_box_corners(detection[1], detection[2], detection[5], detection[6], detection[7])
                 ## step 4 : computer the center distance between label and detection bounding-box in x, y, and z
+                dist_x = label.box.center_x - detection[1]
+                dist_y = label.box.center_y - detection[2]
+                dist_z = label.box.center_z - detection[3]
                 
                 ## step 5 : compute the intersection over union (IOU) between label and detection bounding-box
-                
+                #using shapely to compute intersections
+                polygon_label = Polygon([(fr_label[0],fr_label[1]), (fl_label[0],fl_label[1]), (rl_label[0],rl_label[1]), (rr_label[0],rr_label[1])])
+                polygon_det = Polygon([(fr_det[0],fr_det[1]), (fl_det[0],fl_det[1]), (rl_det[0],rl_det[1]), (rr_det[0],rr_det[1])])
+
+                intersection = polygon_label.intersection(polygon_det)
+                union = polygon_label.area + polygon_det.area - intersection.area
+                iou = intersection.area / union
                 ## step 6 : if IOU exceeds min_iou threshold, store [iou,dist_x, dist_y, dist_z] in matches_lab_det and increase the TP count
-                
+                if iou>min_iou:
+                    matches_lab_det.append([iou,dist_x, dist_y, dist_z])
+                    true_positives += 1
+            if not(matches_lab_det):
+                false_negatives += 1
             #######
             ####### ID_S4_EX1 END #######     
             
@@ -68,22 +84,23 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
             best_match = max(matches_lab_det,key=itemgetter(1)) # retrieve entry with max iou in case of multiple candidates   
             ious.append(best_match[0])
             center_devs.append(best_match[1:])
-
+            
 
     ####### ID_S4_EX2 START #######     
     #######
+
     print("student task ID_S4_EX2")
     
     # compute positives and negatives for precision/recall
     
     ## step 1 : compute the total number of positives present in the scene
-    all_positives = 0
+    all_positives = len(detections)
 
     ## step 2 : compute the number of false negatives
-    false_negatives = 0
+    # was computed in the loop --> when no detection area was compatible with label, then +1
 
     ## step 3 : compute the number of false positives
-    false_positives = 0
+    false_positives =  all_positives - true_positives
     
     #######
     ####### ID_S4_EX2 END #######     
@@ -111,12 +128,15 @@ def compute_performance_stats(det_performance_all):
     print('student task ID_S4_EX3')
 
     ## step 1 : extract the total number of positives, true positives, false negatives and false positives
-    
+    total_positives = sum(np.array(pos_negs)[:,0])
+    total_true_positives = sum(np.array(pos_negs)[:,1])
+    total_false_negatives = sum(np.array(pos_negs)[:,2])
+    total_false_positives = sum(np.array(pos_negs)[:,3])
     ## step 2 : compute precision
-    precision = 0.0
+    precision = total_true_positives / (total_true_positives + total_false_positives)
 
     ## step 3 : compute recall 
-    recall = 0.0
+    recall = total_true_positives / (total_true_positives + total_false_negatives)
 
     #######    
     ####### ID_S4_EX3 END #######     
