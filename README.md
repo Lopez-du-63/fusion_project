@@ -1,3 +1,65 @@
+# Student Write-up
+I will present the different parts of the implemented project here.
+
+## Compute Lidar Point-Cloud from Range Image
+### S1
+#### EX1
+Here is an example of stacked image I obtained by executing my code.  
+Images were resized within the main loop as their witdh was too big for manual analysis.
+![Stacked Image](/img/range_image.JPG)
+
+### Step 1
+#### EX2
+Below can be found 3 examples of pointclouds:
+![PCL 1](/img/pcl_1st.png)
+  
+![PCL 2](/img/pcl_2nd.png)
+  
+![PCL 3](/img/pcl_3rd.png)
+  
+I added purple rectangles to identify different vehicles.  
+After going through a serie of pointcloud, I would say following features appear to be stable:
+  * front-bumper and rear-bumper: that's the feature which is always there even in worst cases, we can intuitively recognize a car
+  * wheels: when a bit more points are available, we can recognize the car wheels
+  * Generally speaking, every metallic part of the car is a good reflector. Which makes sense. Below another picture to illustrate this:  
+![PCL 4](/img/pcl_4th.png)
+
+### Step 2
+In the exercise 2 i create the BEV view. I followed instructions provided in the lesson rather than in the code, as there is a mistake in the comments. The provided code suggests to take the intensity of the highest point in a cell, instead of taking the point with most intensity in the cell.
+I used the percentile function in order to normalize intensity.
+Below an example of obtained BEV:  
+![BEV](/img/bev_example.JPG)
+
+
+### Step 3
+I met following difficulties:
+ * The conversion of coordinates for the bounding box. It took me some time to realise the x and y axes were switched.
+ * The structure of "detections" variable provided by the fpn_resnet took me some time to understand before being able to re-use it. In the end, as we only detect vehicles in this exercise, we do not need to extract the class id.
+
+Here is an example of result:  
+![FPN Detection](/img/fpn_resnet_detection.JPG)  
+We can see that 2 vehicles out of 3 are correctly detected.
+
+### Step 4
+#### EX1
+For this part, i used the shape library to compute the ious.
+I didn't know how to handle the corner case where the algorithm would draw several times a bounding box for the same object. I decided to count them as independant detections. Meaning that if a real object was detected twice, this means I have 2 true positives.
+
+#### EX2
+The number of false_negatives is equal to the number of times I was not able to match a label to at least one detection.
+The number of false_positives is equal to the number of times I detected an object minus the number of true positives.
+
+#### EX3
+In order to check my results, I ran the full project only using the result files. Then I used my version of "measure_detection_performance" and reach the same results. I did this operation because my numbers were not matching to the one provided in the exercises.
+
+When executing my own code on the whole chain I find nearly the same numbers versus the analysis of numbers provided from the results files.
+Here are my results using the parameters provided for the exercise:  
+  * precision = 0.9611307420494699
+  * recall = 0.8888888888888888  
+![Overall Results](img/overall_results.png)  
+
+The error alonz z axis is extremely high. But this is because the Step 4 is executed using Darknet. And according to the provided code, when using darknet model, Z takes the arbitrary value of 0. So this makes no sense to check this value.  
+
 
 # SDCND : Sensor Fusion and Tracking
 This is the project for the second course in the  [Udacity Self-Driving Car Engineer Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213) : Sensor Fusion and Tracking. 
@@ -15,6 +77,9 @@ The following diagram contains an outline of the data flow and of the individual
 <img src="img/img_title_2_new.png"/>
 
 Also, the project code contains various tasks, which are detailed step-by-step in the code. More information on the algorithm and on the tasks can be found in the Udacity classroom. 
+
+
+
 
 ## Project File Structure
 
