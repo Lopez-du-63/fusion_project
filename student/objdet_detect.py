@@ -70,6 +70,7 @@ def load_configs_model(model_name='darknet', configs=None):
         configs.num_workers = 1
         configs.batch_size = 1
         configs.conf_thresh = 0.5
+        configs.num_classes = 3
 
         configs.pin_memory = True
         configs.distributed = False
@@ -81,7 +82,6 @@ def load_configs_model(model_name='darknet', configs=None):
 
         configs.imagenet_pretrained = False
         configs.head_conv = 64
-        configs.num_classes = 3
         configs.num_center_offset = 2
         configs.num_z = 1
         configs.num_dim = 3
@@ -219,7 +219,8 @@ def detect_objects(input_bev_maps, model, configs):
 
             
 
-    ####### ID_S3_EX2 START #######     
+    ####### ID_S3_EX2 START ####### 
+    #    
     #######
     # Extract 3d bounding boxes from model response
     print("student task ID_S3_EX2")
@@ -227,22 +228,28 @@ def detect_objects(input_bev_maps, model, configs):
 
     ## step 1 : check whether there are any detections
     ## step 2 : loop over all detections
-    for j in range(configs.num_classes):
-        if len(detections[j] > 0):
-            for row in detections[j]:
-                _score, _x, _y, _z, _h, _w, _l, _yaw = row
-                ## step 3 : perform the conversion using the limits for x, y and z set in the configs structure
-                y = _x*(configs.lim_y[1]-configs.lim_y[0])/(configs.bev_width) + configs.lim_y[0]
-                x = _y*(configs.lim_x[1]-configs.lim_x[0])/(configs.bev_height) + configs.lim_x[0]
-                z = _z * float(configs.lim_z[1] - configs.lim_z[0]) +  configs.lim_z[0]
-                w = _w*(configs.lim_y[1] - configs.lim_y[0])/configs.bev_width
-                l = _l * (configs.lim_x[1] - configs.lim_x[0]) / configs.bev_height
-                yaw = -_yaw
-                ## step 4 : append the current object to the 'objects' array
-                objects.append([1, x, y, z, _h, w, l, yaw])
+    if 'darknet' in configs.arch:
+        for row in detections:
+            objects.append(convert_coordinates(row, configs))
+    elif 'fpn_resnet' in configs.arch:
+        for j in range(configs.num_classes):
+            if len(detections[j] > 0):
+                for row in detections[j]:
+                    ## step 4 : append the current object to the 'objects' array
+                    objects.append(convert_coordinates(row, configs))
         
     #######
     ####### ID_S3_EX2 START #######   
     
     return objects    
 
+def convert_coordinates(detection, configs):
+    _score, _x, _y, _z, _h, _w, _l, _yaw = detection
+    ## step 3 : perform the conversion using the limits for x, y and z set in the configs structure
+    y = _x*(configs.lim_y[1]-configs.lim_y[0])/(configs.bev_width) + configs.lim_y[0]
+    x = _y*(configs.lim_x[1]-configs.lim_x[0])/(configs.bev_height) + configs.lim_x[0]
+    z = _z * float(configs.lim_z[1] - configs.lim_z[0]) +  configs.lim_z[0]
+    w = _w*(configs.lim_y[1] - configs.lim_y[0])/configs.bev_width
+    l = _l * (configs.lim_x[1] - configs.lim_x[0]) / configs.bev_height
+    yaw = -_yaw
+    return [1, x, y, z, _h, w, l, yaw]
