@@ -134,7 +134,7 @@ def bev_from_pcl(lidar_pcl, configs):
     lidar_pcl_copy[:,1] = np.int_((lidar_pcl_copy[:,1]-configs.lim_y[0]) * configs.bev_width/(configs.lim_y[1] - configs.lim_y[0]))
 
     # step 4 : visualize point-cloud using the function show_pcl from a previous task
-    show_pcl(lidar_pcl_copy)
+    #show_pcl(lidar_pcl_copy)
     
     #######
     ####### ID_S2_EX1 END #######     
@@ -167,8 +167,8 @@ def bev_from_pcl(lidar_pcl, configs):
     
     ## step 5 : temporarily visualize the intensity map using OpenCV to make sure that vehicles separate well from the background
     intensity_map_vis = intensity_map *255
-    cv2.imshow('intensity_map', intensity_map_vis.astype(np.uint8))
-    cv2.waitKey(0)
+    #cv2.imshow('intensity_map', intensity_map_vis.astype(np.uint8))
+    #cv2.waitKey(0)
     #######
     ####### ID_S2_EX2 END ####### 
 
@@ -196,8 +196,8 @@ def bev_from_pcl(lidar_pcl, configs):
     ## step 3 : temporarily visualize the intensity map using OpenCV to make sure that vehicles separate well from the background
     
     height_map_vis = height_map*255
-    cv2.imshow('map_height', height_map_vis.astype(np.uint8))
-    cv2.waitKey(0)
+    #cv2.imshow('map_height', height_map_vis.astype(np.uint8))
+    #cv2.waitKey(0)
 
     #######
     ####### ID_S2_EX3 END #######       
