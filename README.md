@@ -1,4 +1,35 @@
-# Student Write-up
+# Student Write-up Final Project
+*Note*: I modified the evaluation.py file so that it maximizes frame size of plots on Windows (this was working only under Ubuntu).
+  
+## Tracking
+We can see in the picture below the RMSE results.
+  
+I calculated the 3D versions of the F and Q matrix, as they were not provided in the project outline.
+  
+![RMSE_1st_Step](/img/mean_RMSE.png)
+
+## Track Management
+The track was eventually deleted, although as mentionned in the project rubric, it takes a long time.
+  Below the RMSE plot.
+  
+![RMSE_2nd_Step](/img/mean_RMSE_part2.png)
+
+## Data Association
+Several ghost tracks are detected but none is ever confirmed. Real tracks are never lost.
+  Below the RMSE plot.
+
+![RMSE_3rd_Step](/img/mean_RMSE_part3.png)
+
+## Sensor Fusion
+Using the camera allows to slightly reduce the RMSE, but the impact is really slight (about a few centimeters).
+  Below the RMSE plot.
+  
+![RMSE_4th_Step](/img/mean_RMSE_part4.png)
+  
+  The video can be downloaded at following [link](/img/video.mp4)
+  
+
+# Student Write-up Mid-Term Project
 I will present the different parts of the implemented project here.
 
 ## Compute Lidar Point-Cloud from Range Image
