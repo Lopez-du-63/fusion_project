@@ -3,3 +3,13 @@
 ################################################################################
 
 /dataset
+/.vs/fusion_project/v16
+/results
+/tools/objdet_models/darknet/pretrained
+/tools/waymo_reader/simple_waymo_open_dataset_reader/__pycache__
+/env
+
+/student/__pycache__
+/tools/objdet_models/darknet/models/__pycache__
+/tools/objdet_models/darknet/utils/__pycache__
+/misc/__pycache__
